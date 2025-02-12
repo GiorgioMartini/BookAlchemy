@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Book Library</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Book Library</h1>
+
+    <div class="add-links">
+      <a href="{{ url_for('add_book') }}">Add New Book</a>
+      <a href="{{ url_for('add_author') }}">Add New Author</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div class="flash-message">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <div class="sort-options">
+      Sort by:
+      <a
+        href="{{ url_for('homepage', sort_by='title', order='asc' if sort_by != 'title' or order == 'desc' else 'desc') }}"
+        class="sort-link {{ 'active' if sort_by == 'title' }}"
+      >
+        Title {{ '↓' if sort_by == 'title' and order == 'desc' else '↑' if
+        sort_by == 'title' and order == 'asc' else '' }}
+      </a>
+      <a
+        href="{{ url_for('homepage', sort_by='author', order='asc' if sort_by != 'author' or order == 'desc' else 'desc') }}"
+        class="sort-link {{ 'active' if sort_by == 'author' }}"
+      >
+        Author {{ '↓' if sort_by == 'author' and order == 'desc' else '↑' if
+        sort_by == 'author' and order == 'asc' else '' }}
+      </a>
+      <a
+        href="{{ url_for('homepage', sort_by='publication_year', order='asc' if sort_by != 'publication_year' or order == 'desc' else 'desc') }}"
+        class="sort-link {{ 'active' if sort_by == 'publication_year' }}"
+      >
+        Year {{ '↓' if sort_by == 'publication_year' and order == 'desc' else
+        '↑' if sort_by == 'publication_year' and order == 'asc' else '' }}
+      </a>
+    </div>
+
+    {% for book in books %}
+    <div class="book-item">
+      <div class="book-info">
+        <h3 class="book-title">
+          {{ book.title }}
+          <span class="publication-year">({{ book.publication_year }})</span>
+        </h3>
+        <div class="author-name">by {{ book.author.name }}</div>
+      </div>
+      <form
+        action="{{ url_for('delete_book', book_id=book.id) }}"
+        method="POST"
+        style="display: inline"
+      >
+        <button
+          type="submit"
+          class="delete-button"
+          onclick="return confirm('Are you sure you want to delete this book?')"
+        >
+          Delete
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </body>
+</html>

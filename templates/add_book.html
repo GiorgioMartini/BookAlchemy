@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Add New Book</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Add New Book</h1>
+
+    <div class="nav-links">
+      <a href="{{ url_for('homepage') }}">← Back to Library</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for
+    message in messages %}
+    <div class="flash-message">{{ message }}</div>
+    {% endfor %} {% endif %} {% endwith %}
+
+    <div class="form-container">
+      <form action="/add_book" method="POST">
+        <div class="form-group">
+          <label for="title">Book Title:</label>
+          <input type="text" id="title" name="title" required />
+        </div>
+
+        <div class="form-group">
+          <label for="publication_year">Publication Year:</label>
+          <input
+            type="number"
+            id="publication_year"
+            name="publication_year"
+            min="1"
+            max="{{ range(1900, 2024) | random }}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="author">Select Author:</label>
+          <select id="author" name="author_id" required>
+            <option value="">Choose an author...</option>
+            {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <input type="submit" value="Add Book" />
+      </form>
+    </div>
+  </body>
+</html>
